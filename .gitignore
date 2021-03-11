@@ -1,0 +1,6 @@
+build
+build2
+*.vcxproj.filters
+*.dll
+*.exe
+CTest
