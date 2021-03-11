@@ -22,7 +22,7 @@ This app allows you to change the default EFI boot order and to set your next EF
 ## build from source
 
 ## Prerequisite
-
+It will most likely work with other versions and just need to adopt build.bat to change generator for your build system. Below are the specific versions that I tested the build script with:
 - VS2019
 - Golang 1.16+
 - CMake v3+
