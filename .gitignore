@@ -4,3 +4,5 @@ build2
 *.dll
 *.exe
 CTest
+CMakeFiles
+*.cmake
