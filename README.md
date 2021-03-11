@@ -14,7 +14,7 @@ This app allows you to change the default EFI boot order and to set your next EF
 ## future work
 
 - Build client that's compatible with Linux 
-- Build client that's comapotble with MacOS. I am not sure if this is possible since I have not seen any macOS api that allows manipulation of EFI BootNext,BootOrder variables.
+- Build client that's compatible with MacOS. I am not sure if this is possible since I have not seen any macOS api that allows manipulation of EFI BootNext,BootOrder variables.
  (Would love to hear feedback if there's away)
 
 ## build from source
