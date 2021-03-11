@@ -11,6 +11,11 @@ This app allows you to change the default EFI boot order and to set your next EF
    - Restart To: This will change EFI BootNext variable and will immediately restart the computer. It will not change your default boot.
    - Change Default Boot: This will change EFI BootOrder variable only. The check box on the sub menu entry indicates your current default boot. This selection will not cause a restart of the computer.
 
+## future work
+
+- Build client that's compatible with Linux 
+- Build client that's comapotble with MacOS. I am not sure if this is possible since I have not seen any macOS api that allows manipulation of EFI BootNext,BootOrder variables.
+ (Would love to hear feedback if there's away)
 
 ## build from source
 
