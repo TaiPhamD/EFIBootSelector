@@ -24,7 +24,7 @@ This app allows you to change the default EFI boot order and to set your next EF
 ## Prerequisite
 
 - VS2019
-- Golang 1.6+
+- Golang 1.16+
 - CMake v3+
 
 run build.bat and it should create binaries in build/dist folder
