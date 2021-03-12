@@ -8,3 +8,4 @@ CMakeFiles
 *.cmake
 *.exe
 *.json
+*.log
