@@ -1,6 +1,6 @@
 # EFIBootSelector
 
-This app allows you to change the default EFI boot order and to set your next EFI boot. Must run with admin privileges in order for the app to change EFI variables.
+This app allows you to change the default EFI boot order and to set your next EFI boot.
 
 ![](https://github.com/TaiPhamD/EFIBootSelector/blob/main/EFIBOOTSELECTOR.jpg)
 
