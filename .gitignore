@@ -6,3 +6,5 @@ build2
 CTest
 CMakeFiles
 *.cmake
+*.exe
+*.json

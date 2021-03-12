@@ -5,5 +5,6 @@ set(CPACK_PROJECT_NAME ${PROJECT_NAME})
 set(CPACK_PROJECT_VERSION ${PROJECT_VERSION})
 include(CPack)
 
-add_subdirectory("efiDLL")
-add_subdirectory("efiClient")
+add_subdirectory("efidll")
+add_subdirectory("eficlient")
+add_subdirectory("efiserver")

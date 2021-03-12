@@ -2,28 +2,27 @@ package main
 
 import "C"
 import (
-	"eficlient/icondata"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
+	"log"
+	"net/rpc"
 	"os"
+	"path/filepath"
 	"strconv"
 	"strings"
-	"syscall"
-	"unsafe"
+
+	"github.com/taiphamd/efibootselector/eficlient/icondata"
 
 	"github.com/getlantern/systray"
-	"golang.org/x/sys/windows"
+	model "github.com/taiphamd/efibootselector/common"
 )
 
-var GetPermissionFunc *syscall.Proc
-var ShutDownFunc *syscall.Proc
-var ChangeBootFunc *syscall.Proc
-var GetBootEntriesFunc *syscall.Proc
-var GetCurrentBootFunc *syscall.Proc
 var BootArray []BootEntry
-
 var mode uint16
 var data uint16
-
+var rpc_client *rpc.Client
+var serverinfo model.ServerInfo //use to validate authenticate with rpc server
 type BootEntry struct {
 	index    uint16
 	id       string
@@ -32,57 +31,58 @@ type BootEntry struct {
 	db       *systray.MenuItem //default boot object
 }
 
-func runMeElevated() {
-	verb := "runas"
-	exe, _ := os.Executable()
-	cwd, _ := os.Getwd()
-	args := strings.Join(os.Args[1:], " ")
-
-	verbPtr, _ := syscall.UTF16PtrFromString(verb)
-	exePtr, _ := syscall.UTF16PtrFromString(exe)
-	cwdPtr, _ := syscall.UTF16PtrFromString(cwd)
-	argPtr, _ := syscall.UTF16PtrFromString(args)
-
-	var showCmd int32 = 1 //SW_NORMAL
-
-	err := windows.ShellExecute(0, verbPtr, exePtr, argPtr, cwdPtr, showCmd)
-	if err != nil {
-		fmt.Println(err)
-	}
-	os.Exit(0)
-}
-
-func amAdmin() bool {
-	_, err := os.Open("\\\\.\\PHYSICALDRIVE0")
-	if err != nil {
-		fmt.Println("admin no")
-		return false
-	}
-	fmt.Println("admin yes")
-	return true
-}
-
 func main() {
-	if !amAdmin() {
-		runMeElevated()
+	dir, err := filepath.Abs(filepath.Dir(os.Args[0]))
+	if err != nil {
+		log.Fatal(err)
 	}
+	//set up log file
+	filelog, errlog := os.OpenFile(dir+"\\eficlient.log", os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0644)
+	if errlog != nil {
+		log.Fatal(errlog)
+	}
+	defer filelog.Close()
+	log.SetOutput(filelog)
+
+	//get server info
+	jsonFile, err := os.Open(dir + "\\efiserver_config.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	// defer the closing of our jsonFile so that we can parse it later on
+	defer jsonFile.Close()
+	byteValue, _ := ioutil.ReadAll(jsonFile)
+	json.Unmarshal(byteValue, &serverinfo)	
+
+
 	systray.Run(onReady, onExit)
 }
 
 func getEntries() []BootEntry {
 
-	var default_boot uint16
-	mode = 1
-	// Get current default boot
-	GetCurrentBootFunc.Call(uintptr(unsafe.Pointer(&default_boot)), uintptr(unsafe.Pointer(&mode)))
+	rpc_client, err := rpc.DialHTTP("tcp", "localhost:"+strconv.Itoa(int(serverinfo.Port)))
+	if err != nil {
+		log.Fatal("dialing:", err)
+	}
 
-	// Get all available boot entries
-	var buffer_size uint16
-	buffer_size = 2048
-	c_string_buffer := make([]byte, buffer_size)
-	GetBootEntriesFunc.Call(uintptr(unsafe.Pointer(&c_string_buffer)), uintptr(unsafe.Pointer(&buffer_size)))
-	entries := C.GoString((*C.char)(unsafe.Pointer(&c_string_buffer)))
-	//fmt.Printf("%s\n", entries)
+	var args model.Args
+	// Get default boot
+	var default_boot uint16
+	args.Mode = 1
+	args.Token = serverinfo.Token
+	err = rpc_client.Call("EFI_RPC.GetDefaultBoot", args, &default_boot)
+	if err != nil {
+		log.Fatal("EFI_RPC.GetEntries error:", err)
+	}
+
+	// Get boot entries
+	args.Mode = 1
+	var entries string
+	err = rpc_client.Call("EFI_RPC.GetEntries", args, &entries)
+	if err != nil {
+		log.Fatal("EFI_RPC.GetEntries error:", err)
+	}
+
 	list := strings.Split(entries, "\n")
 	result := make([]BootEntry, 0, len(list))
 	for _, s := range list {
@@ -118,13 +118,8 @@ func setDefault(myentry *[]BootEntry, index uint16) {
 func onReady() {
 
 	// Load DLL function for windows api
-	efifunc := syscall.MustLoadDLL("efiDLL")
-	GetBootEntriesFunc = efifunc.MustFindProc("GetBootEntries")
-	GetCurrentBootFunc = efifunc.MustFindProc("SystemGetCurrentBoot")
-	// GetPermissionFunc.Call()
-	BootArray = getEntries()
 
-	// Build systray GUI
+	BootArray = getEntries()
 	systray.SetIcon(icondata.MainIcon)
 	systray.SetTitle("EFI Boot Selector")
 	systray.SetTooltip("EFI Boot Selector")
@@ -157,22 +152,40 @@ func onReady() {
 				case <-s.db.ClickedCh:
 					fmt.Println("We clicked default boot to:", s.index)
 					setDefault(&BootArray, s.index)
-					mode = 1 //for default boot change
-					data = s.index
-					loaddll := syscall.MustLoadDLL("efiDLL")
-					//defer loaddll.Release()
-					ChangeBootFunc := loaddll.MustFindProc("SystemChangeBoot")
-					ChangeBootFunc.Call(uintptr(unsafe.Pointer(&data)), uintptr(unsafe.Pointer(&mode)))
+					rpc_client, err := rpc.DialHTTP("tcp", "localhost:"+strconv.Itoa(int(serverinfo.Port)))
+					if err != nil {
+						log.Fatal("dialing:", err)
+					}
+					var args model.Args
+					args.Mode = 1
+					args.Data = s.index
+					args.Token = serverinfo.Token
+					err = rpc_client.Call("EFI_RPC.SetDefaultBoot", args, nil)
+					if err != nil {
+						log.Fatal("EFI_RPC.SetDefaultBoot error:", err)
+					}
+
 				case <-s.nb.ClickedCh:
 					fmt.Println("We are restarting to")
-					mode = 0 //for default boot change
-					data = s.index
-					loaddll := syscall.MustLoadDLL("efiDLL")
-					//defer loaddll.Release()
-					ChangeBootFunc := loaddll.MustFindProc("SystemChangeBoot")
-					RestartFunc := loaddll.MustFindProc("SystemShutdown")
-					ChangeBootFunc.Call(uintptr(unsafe.Pointer(&data)), uintptr(unsafe.Pointer(&mode)))
-					RestartFunc.Call(uintptr(unsafe.Pointer(&mode)))
+					/*mode = 0 //for default boot change
+					data = s.index*/
+					rpc_client, err := rpc.DialHTTP("tcp", "localhost:"+strconv.Itoa(int(serverinfo.Port)))
+					if err != nil {
+						log.Fatal("dialing:", err)
+					}
+					var args model.Args
+					args.Mode = 0
+					args.Data = s.index
+					args.Token = serverinfo.Token
+					err = rpc_client.Call("EFI_RPC.SetDefaultBoot", args, nil)
+					if err != nil {
+						log.Fatal("EFI_RPC.SetDefaultBoot error:", err)
+					}
+
+					err = rpc_client.Call("EFI_RPC.ShutDown", args, nil)
+					if err != nil {
+						log.Fatal("EFI_RPC.ShutDown error:", err)
+					}
 				}
 			}
 		}()
