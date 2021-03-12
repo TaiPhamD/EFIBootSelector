@@ -26,8 +26,15 @@ if '%errorlevel%' NEQ '0' (
 
 ::ENTER YOUR CODE BELOW:
 
+::Download tdm-gcc run time
+ECHO "Please install TDM-GCC runtime first: https://github.com/jmeubank/tdm-gcc/releases/download/v9.2.0-tdm64-1/tdm64-gcc-9.2.0.exe"
+ECHO "before proceeding"
 
-
+@echo off
+setlocal
+:PROMPT
+SET /P AREYOUSURE=Did you install required GCC runtime (Y/[N])?
+IF /I "%AREYOUSURE%" NEQ "Y" GOTO END
 SC QUERY EFIBootSelectorService > NUL
 IF ERRORLEVEL 1060 GOTO MISSING
 ECHO service exist stopping then deleting service
@@ -59,3 +66,8 @@ REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run /v EFIBo
 
 timeout 5
 start C:\efibootselector\eficlient.exe
+
+:END
+endlocal
+
+pause

@@ -14,3 +14,5 @@ CALL "%InstallDir%\Common7\Tools\vsdevcmd.bat" -arch=x64 -host_arch=x64
 cmake -G "NMake Makefiles" ..
 @IF ERRORLEVEL 1 EXIT /B 1
 cmake --build . --config Release
+xcopy install.bat build\dist
+xcopy uninstall.bat build\dist
