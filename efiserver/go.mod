@@ -1,4 +1,4 @@
-module main
+module efiserver
 
 go 1.16
 

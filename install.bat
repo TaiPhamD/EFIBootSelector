@@ -27,9 +27,8 @@ if '%errorlevel%' NEQ '0' (
 ::ENTER YOUR CODE BELOW:
 
 ::Download tdm-gcc run time
-ECHO "Please install TDM-GCC runtime first: https://github.com/jmeubank/tdm-gcc/releases/download/v9.2.0-tdm64-1/tdm64-gcc-9.2.0.exe"
-ECHO "before proceeding"
-
+ECHO Please install TDM-GCC runtime first: 
+ECHO https://github.com/jmeubank/tdm-gcc/releases/download/v9.2.0-tdm64-1/tdm64-gcc-9.2.0.exe
 @echo off
 setlocal
 :PROMPT
@@ -40,12 +39,12 @@ IF ERRORLEVEL 1060 GOTO MISSING
 ECHO service exist stopping then deleting service
 sc stop EFIBootSelectorService 
 sc delete EFIBootSelectorService 
-GOTO END
+GOTO NOSERVICE
 
 :MISSING
 ECHO service does not exist creating new one...
 
-:END
+:NOSERVICE
 
 taskkill /IM eficlient.exe
 

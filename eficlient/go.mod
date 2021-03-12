@@ -1,4 +1,4 @@
-module main
+module eficlient
 
 go 1.16
 
