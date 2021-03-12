@@ -26,36 +26,11 @@ if '%errorlevel%' NEQ '0' (
 
 ::ENTER YOUR CODE BELOW:
 
-
-
-SC QUERY EFIBootSelectorService > NUL
-IF ERRORLEVEL 1060 GOTO MISSING
-ECHO service exist stopping then deleting service
 sc stop EFIBootSelectorService 
 sc delete EFIBootSelectorService 
-GOTO END
-
-:MISSING
-ECHO service does not exist creating new one...
-
-:END
-
 taskkill /IM eficlient.exe
-
 timeout 2
-
 if exist "c:\efibootselector\" rd /q /s "c:\efibootselector
-mkdir c:\efibootselector
-xcopy efiserver.exe c:\efibootselector\
-xcopy eficlient.exe c:\efibootselector\
-xcopy efiDLL.dll c:\efibootselector\
+REG delete HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run\ /v EFIBootSelector /f
 
-
-sc create EFIBootSelectorService binPath="C:\efibootselector\efiserver.exe"
-sc config EFIBootSelectorService start= auto
-sc start EFIBootSelectorService 
-
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run /v EFIBootSelector /d "C:\Windows\System32\cmd.exe /k start C:\efibootselector\eficlient.exe" /f 
-
-timeout 5
-start C:\efibootselector\eficlient.exe
+ECHO completed uninstalling efibootselector
