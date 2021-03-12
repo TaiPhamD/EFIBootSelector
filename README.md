@@ -6,7 +6,7 @@ This app allows you to change the default EFI boot order and to set your next EF
 
 ## usage
 
-- Run install.bat. See [release note](https://github.com/TaiPhamD/EFIBootSelector/releases/tag/v0.2) if you want to know what install and uninstalld does.
+- Run install.bat. See [release note](https://github.com/TaiPhamD/EFIBootSelector/releases/tag/v0.2) if you want to know what install and uninstall does.
 - This app has 2 basic functions:
    - Restart To: This will change EFI BootNext variable and will immediately restart the computer. It will not change your default boot.
    - Change Default Boot: This will change EFI BootOrder variable only. The check box on the sub menu entry indicates your current default boot. This selection will not cause a restart of the computer.
