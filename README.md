@@ -5,7 +5,9 @@ This app allows you to change the default EFI boot order and to set your next EF
 ![](https://github.com/TaiPhamD/EFIBootSelector/blob/main/EFIBOOTSELECTOR.jpg)
 
 ## usage
-
+### Prerequisite
+ - Requires GCC runtime: https://github.com/jmeubank/tdm-gcc/releases/download/v9.2.0-tdm64-1/tdm64-gcc-9.2.0.exe
+### installation 
 - Run install.bat. See [release note](https://github.com/TaiPhamD/EFIBootSelector/releases/tag/v0.2) if you want to know what install and uninstall does.
 - This app has 2 basic functions:
    - Restart To: This will change EFI BootNext variable and will immediately restart the computer. It will not change your default boot.
@@ -24,5 +26,6 @@ It will most likely work with other versions and just need to adopt build.bat to
 - VS2019
 - Golang 1.16+
 - CMake v3+
+- GCC Compiler something like:  https://github.com/jmeubank/tdm-gcc/releases/download/v9.2.0-tdm64-1/tdm64-gcc-9.2.0.exe
 
 run build.bat and it should create binaries in build/dist folder
