@@ -14,7 +14,7 @@ import (
 
 	"github.com/kardianos/service"
 	model "github.com/taiphamd/efibootselector/common"
-	"github.com/taiphamd/efibootselector/efiServer/api"
+	"github.com/taiphamd/efibootselector/efiserver/api"
 )
 
 //type RPCHandler struct{}

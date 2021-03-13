@@ -1,4 +1,4 @@
-module eficlient
+module github.com/taiphamd/efibootselector/eficlient
 
 go 1.16
 

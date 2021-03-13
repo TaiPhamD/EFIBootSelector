@@ -12,7 +12,7 @@ add_custom_command(OUTPUT golang_efiserver_build.out
         #COMMAND ${CMAKE_COMMAND} -E echo "Installing Golang 3rd party lib"
         #COMMAND go get github.com/kardianos/service
         #COMMAND go get github.com/getlantern/systray
-        #COMMAND go mod download
+        COMMAND go mod download
         #COMMAND rsrc -manifest eficlient.manifest -o eficlient.syso
         COMMAND ${CMAKE_COMMAND} -E echo "Compiling Golang efiServer project"
         #COMMAND set GOOS="windows"

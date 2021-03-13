@@ -13,7 +13,7 @@ add_custom_command(OUTPUT golang_eficlient_build.out
         #COMMAND go get github.com/kardianos/service
         #COMMAND go get github.com/getlantern/systray
         #COMMAND go get github.com/taiphamd/efibootselector
-        #COMMAND go mod download
+        COMMAND go mod download
         COMMAND ${CMAKE_COMMAND} -E echo "Compiling Golang efiClient project"
         #COMMAND set GOOS="windows"
         #COMMAND set GOARCH="386"
