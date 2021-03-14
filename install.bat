@@ -59,7 +59,7 @@ sc config EFIBootSelectorService start= auto
 sc start EFIBootSelectorService 
 
 :: add registry key to auto start eficlient on windows startup
-REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run /v EFIBootSelector /d "C:\Windows\System32\cmd.exe /k start C:\efibootselector\eficlient.exe" /f
+REG ADD HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run /v EFIBootSelector /d "C:\efibootselector\eficlient.exe" /f
 
 timeout 5
 start C:\efibootselector\eficlient.exe
