@@ -5,6 +5,8 @@ set(TARGET efiServer)
 #set(GOPATH ${CMAKE_CURRENT_BINARY_DIR})
 set(SRCS server.go)
 
+SET (CC clang-cl)
+SET (CXX clang-cl)
 # Custom go install 3rd party "Service" lib and build command              
 add_custom_command(OUTPUT golang_efiserver_build.out
         DEPENDS ${SRCS}

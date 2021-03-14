@@ -11,7 +11,7 @@ for /f "usebackq tokens=*" %%i in (`%VSWHERE% -latest -products * -requires Micr
 )
 CALL "%InstallDir%\Common7\Tools\vsdevcmd.bat" -arch=x64 -host_arch=x64
 @IF ERRORLEVEL 1 EXIT /B 1
-cmake -G "NMake Makefiles" ..
+cmake -DCMAKE_BUILD_TYPE=Release -G "NMake Makefiles" ..
 @IF ERRORLEVEL 1 EXIT /B 1
 cmake --build . --config Release
 xcopy ..\install.bat dist\

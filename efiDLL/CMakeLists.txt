@@ -6,13 +6,17 @@ FILE(GLOB MySources ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp)
 ADD_LIBRARY(efiDLL SHARED ${MySources} ${MyHeaders})
 
 
-#pragma comment(lib, "user32.lib")
-#pragma comment(lib, "advapi32.lib")
+SET (CMAKE_CXX_COMPILER     "C:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Community\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe")
 
+
+# Get rid of MS dependencies for easier distribution
+set(CMAKE_CXX_FLAGS_RELEASE "/MT")
+set(CMAKE_CXX_FLAGS_DEBUG "/MTd")
 
 target_link_libraries(efiDLL user32.lib  advapi32.lib)
+
 set_target_properties(efiDLL 
-                    PROPERTIES 
+                    PROPERTIES PREFIX ""
                     LINKER_LANGUAGE CXX
                     LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/dist"
                     RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/dist")
