@@ -7,8 +7,11 @@
 #include <sstream>
 #include <locale>
 #include <codecvt>
-//#pragma comment(lib, "user32.lib")
-//#pragma comment(lib, "advapi32.lib")
+
+#ifdef _MSC_VER
+#pragma comment(lib, "user32.lib")
+#pragma comment(lib, "advapi32.lib")
+#endif
 
 
   // Set Global UEFI GUID
@@ -161,7 +164,7 @@ extern "C"
     }
 
     entries = my_ss.str();
-    size_t max_size = min(entries.size()+1,*size);
+    size_t max_size = std::min(entries.size()+1,static_cast<std::string::size_type>(*size));
     memcpy(output,entries.c_str(),max_size);
 
     //entries.c_str();

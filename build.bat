@@ -4,14 +4,13 @@
 if exist build rd /s /q build
 mkdir build
 cd build
-@REM https://github.com/microsoft/vswhere/wiki/Find-VC
-set VSWHERE="%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe"
-for /f "usebackq tokens=*" %%i in (`%VSWHERE% -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath`) do (
-  set InstallDir=%%i
-)
-CALL "%InstallDir%\Common7\Tools\vsdevcmd.bat" -arch=x64 -host_arch=x64
-@IF ERRORLEVEL 1 EXIT /B 1
-cmake -DCMAKE_BUILD_TYPE=Release -G "NMake Makefiles" ..
+
+
+SET PATH=C:\msys64\mingw64\bin;C:\msys64\usr\bin;%PATH%
+SET CMAKE_C_COMPILER=gcc
+SET CMAKE_CXX_COMPILER=g++
+cmake -G "Unix Makefiles" -DCMAKE_BUILD_TYPE=Release ..
+@REM cmake -DCMAKE_BUILD_TYPE=Release -G "NMake Makefiles" ..
 @IF ERRORLEVEL 1 EXIT /B 1
 cmake --build . --config Release
 xcopy ..\install.bat dist\
