@@ -49,9 +49,9 @@ timeout 2
 ::Copy binaries to target destination
 if exist "c:\efibootselector\" rd /q /s "c:\efibootselector
 mkdir c:\efibootselector
-xcopy efiserver.exe c:\efibootselector\
-xcopy eficlient.exe c:\efibootselector\
-xcopy efiDLL.dll c:\efibootselector\
+xcopy build\dist\efiserver.exe c:\efibootselector\
+xcopy build\dist\eficlient.exe c:\efibootselector\
+xcopy build\dist\efiDLL.dll c:\efibootselector\
 
 ::Create windows service
 sc create EFIBootSelectorService binPath="C:\efibootselector\efiserver.exe"

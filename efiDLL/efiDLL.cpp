@@ -145,22 +145,15 @@ extern "C"
       }
       uint32_t *bootOptionInfoAttributes =
           reinterpret_cast<uint32_t *>(bootOptionInfoBuffer);
-      // First 4 bytes make a uint32_t comprised of flags. 0x1 means the boot
-      // option is active (not disabled)
-      if (((*bootOptionInfoAttributes) & 0x1) != 0) {
-        std::wstring description(reinterpret_cast<wchar_t *>(
-            bootOptionInfoBuffer + sizeof(uint32_t) + sizeof(uint16_t)));
 
-        /*
-        std::wcout << "Boot option name:" << bootOptionName << std::endl;
-        std::wcout << "Boot description: " << description
-                   << " integer ID: " << std::dec << i << std::endl
-                   << std::endl;
-        */
+      std::wstring description(reinterpret_cast<wchar_t *>(bootOptionInfoBuffer + sizeof(uint32_t) + sizeof(uint16_t)));
+      /*
+      std::wcout << "Boot option name:" << bootOptionName << std::endl;
+      std::wcout << "Boot description: " << description
+                  << " integer ID: " << std::dec << i << std::endl
+                  << std::endl;
+      */
        my_ss <<  std::dec << i << ":" <<  converter.to_bytes(description) << std::endl;
-       
-
-      }
     }
 
     entries = my_ss.str();
