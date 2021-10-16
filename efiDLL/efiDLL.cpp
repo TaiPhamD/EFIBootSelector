@@ -128,7 +128,7 @@ extern "C"
     DWORD bootOrderLength = 0;
     const int BUFFER_SIZE = 4096;
 
-    for (DWORD i = 0; i < 10000; i++) {
+    for (DWORD i = 0; i < 5000; i +=2) {
       std::wstringstream bootOptionNameBuilder;
       bootOptionNameBuilder << "Boot" << std::uppercase << std::setfill(L'0')
                             << std::setw(4) << std::hex << (uint16_t)i;
