@@ -51,8 +51,7 @@ func main() {
 	// defer the closing of our jsonFile so that we can parse it later on
 	defer jsonFile.Close()
 	byteValue, _ := ioutil.ReadAll(jsonFile)
-	json.Unmarshal(byteValue, &serverinfo)	
-
+	json.Unmarshal(byteValue, &serverinfo)
 
 	systray.Run(onReady, onExit)
 }
@@ -85,7 +84,7 @@ func getEntries() []BootEntry {
 	list := strings.Split(entries, "\n")
 	result := make([]BootEntry, 0, len(list))
 	for _, s := range list {
-		pair := strings.Split(s, ":")
+		pair := strings.Split(s, "\x07")
 		if len(pair) < 2 {
 			continue
 		}

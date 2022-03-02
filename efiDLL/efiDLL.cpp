@@ -153,7 +153,7 @@ extern "C"
                   << " integer ID: " << std::dec << i << std::endl
                   << std::endl;
       */
-       my_ss <<  std::dec << i << ":" <<  converter.to_bytes(description) << std::endl;
+       my_ss <<  std::dec << i << char(7) <<  converter.to_bytes(description) << std::endl;
     }
 
     entries = my_ss.str();
